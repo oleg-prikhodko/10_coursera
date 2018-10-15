@@ -7,28 +7,10 @@ from bs4 import BeautifulSoup
 from lxml import etree
 from openpyxl import Workbook
 
-
-class CourseInfo(
-    namedtuple(
-        "CourseInfo",
-        ["title", "language", "commitment", "starts", "rating", "url"],
-    )
-):
-    def __repr__(self):
-        return """{}
-        Lang: {}
-        Comitment: {}
-        When: {}
-        Rating: {}
-        URL: {}
-        """.format(
-            self.title,
-            self.language,
-            self.commitment,
-            self.starts,
-            self.rating,
-            self.url,
-        )
+CourseInfo = namedtuple(
+    "CourseInfo",
+    ["title", "language", "commitment", "starts", "rating", "url"],
+)
 
 
 def get_course_urls_from_xml(xml_string, courses_amount=20):
