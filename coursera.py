@@ -31,10 +31,8 @@ class CourseInfo(
         )
 
 
-def get_course_urls(courses_amount=20):
-    url = "https://www.coursera.org/sitemap~www~courses.xml"
-    response = requests.get(url)
-    courses_tree = etree.ElementTree(etree.fromstring(response.content))
+def get_course_urls_from_xml(xml_string, courses_amount=20):
+    courses_tree = etree.ElementTree(etree.fromstring(xml_string))
     course_urls = [
         element.text
         for element in courses_tree.iter(
@@ -44,9 +42,8 @@ def get_course_urls(courses_amount=20):
     return course_urls[:courses_amount]
 
 
-def get_course_info(course_url):
-    response = requests.get(course_url)
-    soup = BeautifulSoup(response.content, features="lxml")
+def get_course_info_from_html(html_string, course_url):
+    soup = BeautifulSoup(html_string, features="lxml")
 
     title = soup.select_one("h1.title").text
     language = getattr(soup.select_one(".rc-Language"), "text", None)
@@ -83,10 +80,15 @@ def load_filepath_from_arguments():
 
 if __name__ == "__main__":
     filepath = load_filepath_from_arguments()
+    xml_feed_url = "https://www.coursera.org/sitemap~www~courses.xml"
     try:
-        course_urls = get_course_urls()
+        xml_courses = requests.get(xml_feed_url).content
+        course_urls = get_course_urls_from_xml(xml_courses)
         course_infos = [
-            get_course_info(course_url) for course_url in course_urls
+            get_course_info_from_html(
+                requests.get(course_url).content, course_url
+            )
+            for course_url in course_urls
         ]
         output_courses_info_to_xlsx(course_infos, filepath)
     except requests.exceptions.RequestException:
