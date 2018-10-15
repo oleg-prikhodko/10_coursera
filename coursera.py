@@ -42,14 +42,14 @@ def get_course_info_from_html(html_string, course_url):
     return course_info
 
 
-def output_courses_info_to_xlsx(course_infos, filepath):
+def create_courses_workbook(course_infos):
     excel_workbook = Workbook()
     excel_worksheet = excel_workbook.active
 
     for course_info in course_infos:
         excel_worksheet.append(course_info)
 
-    excel_workbook.save(filepath)
+    return excel_workbook
 
 
 def load_arguments():
@@ -71,7 +71,8 @@ if __name__ == "__main__":
             )
             for course_url in course_urls
         ]
-        output_courses_info_to_xlsx(course_infos, filepath)
+        courses_workbook = create_courses_workbook(course_infos)
+        courses_workbook.save(filepath)
     except requests.exceptions.RequestException:
         sys.exit("Connection error")
     except FileNotFoundError:
