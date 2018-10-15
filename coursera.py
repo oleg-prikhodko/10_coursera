@@ -93,4 +93,4 @@ if __name__ == "__main__":
     except requests.exceptions.RequestException:
         sys.exit("Connection error")
     except FileNotFoundError:
-        sys.exit("Incorect filepath")
+        sys.exit("Directory does not exist")
