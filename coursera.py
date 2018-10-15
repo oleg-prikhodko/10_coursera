@@ -70,15 +70,15 @@ def output_courses_info_to_xlsx(course_infos, filepath):
     excel_workbook.save(filepath)
 
 
-def load_filepath_from_arguments():
+def load_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("--filepath", default="courses.xlsx")
     arguments = parser.parse_args()
-    return arguments.filepath
+    return arguments
 
 
 if __name__ == "__main__":
-    filepath = load_filepath_from_arguments()
+    filepath = load_arguments().filepath
     xml_feed_url = "https://www.coursera.org/sitemap~www~courses.xml"
     try:
         xml_courses = requests.get(xml_feed_url).content
