@@ -64,9 +64,8 @@ def output_courses_info_to_xlsx(course_infos, filepath):
     excel_workbook = Workbook()
     excel_worksheet = excel_workbook.active
 
-    for row, course_info in enumerate(course_infos, start=1):
-        for column, attribute in enumerate(course_info, start=1):
-            excel_worksheet.cell(row=row, column=column).value = attribute
+    for course_info in course_infos:
+        excel_worksheet.append(course_info)
 
     excel_workbook.save(filepath)
 
