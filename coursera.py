@@ -1,19 +1,18 @@
 import sys
+from collections import namedtuple
 
 import requests
 from bs4 import BeautifulSoup
 from lxml import etree
+from openpyxl import Workbook
 
 
-class CourseInfo:
-    def __init__(self, title, language, commitment, starts, rating, url):
-        self.title = title
-        self.language = language
-        self.commitment = commitment
-        self.starts = starts
-        self.rating = rating
-        self.url = url
-
+class CourseInfo(
+    namedtuple(
+        "CourseInfo",
+        ["title", "language", "commitment", "starts", "rating", "url"],
+    )
+):
     def __repr__(self):
         return """{}
         Lang: {}
@@ -60,12 +59,19 @@ def get_course_info(course_url):
     course_info = CourseInfo(
         title, language, commitment, starts, rating, course_url
     )
-    print(course_info)
+    # print(course_info)
     return course_info
 
 
-def output_courses_info_to_xlsx(filepath):
-    pass
+def output_courses_info_to_xlsx(course_infos, filepath):
+    excel_workbook = Workbook()
+    excel_worksheet = excel_workbook.active
+
+    for row, course_info in enumerate(course_infos, start=1):
+        for column, attribute in enumerate(course_info, start=1):
+            excel_worksheet.cell(row=row, column=column).value = attribute
+
+    excel_workbook.save(filepath)
 
 
 if __name__ == "__main__":
@@ -76,3 +82,5 @@ if __name__ == "__main__":
         ]
     except requests.exceptions.RequestException:
         sys.exit("Connection error")
+
+    output_courses_info_to_xlsx(course_infos, 'test.xlsx')
