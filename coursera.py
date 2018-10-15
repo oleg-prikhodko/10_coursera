@@ -1,3 +1,4 @@
+import argparse
 import sys
 from collections import namedtuple
 
@@ -59,7 +60,6 @@ def get_course_info(course_url):
     course_info = CourseInfo(
         title, language, commitment, starts, rating, course_url
     )
-    # print(course_info)
     return course_info
 
 
@@ -74,13 +74,22 @@ def output_courses_info_to_xlsx(course_infos, filepath):
     excel_workbook.save(filepath)
 
 
+def load_filepath_from_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--filepath", default="courses.xlsx")
+    arguments = parser.parse_args()
+    return arguments.filepath
+
+
 if __name__ == "__main__":
+    filepath = load_filepath_from_arguments()
     try:
         course_urls = get_course_urls()
         course_infos = [
             get_course_info(course_url) for course_url in course_urls
         ]
+        output_courses_info_to_xlsx(course_infos, filepath)
     except requests.exceptions.RequestException:
         sys.exit("Connection error")
-
-    output_courses_info_to_xlsx(course_infos, 'test.xlsx')
+    except FileNotFoundError:
+        sys.exit("Incorect filepath")
